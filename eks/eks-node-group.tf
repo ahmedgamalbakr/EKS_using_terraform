@@ -46,22 +46,20 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
 
 resource "aws_eks_node_group" "nodes_general" {
 
-  # Name of the EKS Cluster.
   cluster_name = aws_eks_cluster.eks.name
 
   # Name of the EKS Node Group.
-  node_group_name = "nodes-general"
+  node_group_name = "eks-nodes"
 
-  # Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group.
+  #(ARN) of the IAM Role that provides permissions for the EKS Node Group.
   node_role_arn = aws_iam_role.nodes_general.arn
 
 
   subnet_ids = [
-      module.network.public_subnet_id_1,
-      module.network.public_subnet_id_2
+      module.network.private_subnet_id_1,
+      module.network.private_subnet_id_2
   ]
 
-  # Configuration block with scaling settings
   scaling_config {
 
     desired_size = 2
@@ -78,7 +76,6 @@ resource "aws_eks_node_group" "nodes_general" {
 
   disk_size = 20
 
-  # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
   force_update_version = false
 
   instance_types = [var.INSTANCE_TYPE]

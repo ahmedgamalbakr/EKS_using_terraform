@@ -32,7 +32,7 @@ resource "aws_iam_role_policy_attachment" "amazon_eks_cluster_policy" {
 
 resource "aws_eks_cluster" "eks" {
   # Name of the cluster.
-  name = "eks"
+  name = "MY-EKS"
 
   role_arn = aws_iam_role.eks_cluster.arn
 
@@ -40,15 +40,17 @@ resource "aws_eks_cluster" "eks" {
 
   vpc_config {
 
-    endpoint_private_access = false
-    endpoint_public_access = true
+    endpoint_private_access = true
+    endpoint_public_access = false
 
     # Must be in at least two different availability zones
     subnet_ids = [
-      module.network.public_subnet_id_1,
-      module.network.public_subnet_id_2
+      module.network.private_subnet_id_1,
+      module.network.private_subnet_id_2
       
     ]
+     security_group_ids = [aws_security_group.eks_cluster_sg.id]
+
   }
 
   
